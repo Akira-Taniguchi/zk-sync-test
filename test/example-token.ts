@@ -1,19 +1,16 @@
 import { expect } from 'chai'
 import { ethers } from 'hardhat'
-import {
-	takeSnapshot,
-	SnapshotRestorer,
-} from '@nomicfoundation/hardhat-network-helpers'
-import { ExampleToken } from '../typechain-types'
+import type { SnapshotRestorer } from '@nomicfoundation/hardhat-network-helpers'
+import { takeSnapshot } from '@nomicfoundation/hardhat-network-helpers'
+import type { Example } from '../typechain-types'
 
 describe('Example', () => {
-	let example: ExampleToken
+	let example: Example
 	let snapshot: SnapshotRestorer
 	before(async () => {
-		const factory = await ethers.getContractFactory('ExampleToken')
-		example = (await factory.deploy()) as ExampleToken
+		const factory = await ethers.getContractFactory('Example')
+		example = (await factory.deploy()) as Example
 		await example.deployed()
-		await example.initialize()
 	})
 	beforeEach(async () => {
 		snapshot = await takeSnapshot()
@@ -21,16 +18,11 @@ describe('Example', () => {
 	afterEach(async () => {
 		await snapshot.restore()
 	})
-	describe('name', () => {
-		it('check name', async () => {
-			const value = await example.name()
-			expect(value.toString()).to.equal('token')
-		})
-	})
-	describe('symbol', () => {
-		it('check symbol', async () => {
-			const symbol = await example.symbol()
-			expect(symbol.toString()).to.equal('TOKEN')
+	describe('setValue', () => {
+		it('set', async () => {
+			await example.setValue(5)
+			const value = await example.getValue()
+			expect(value.toString()).to.equal('5')
 		})
 	})
 })

@@ -76,3 +76,7 @@ package-lock.json
 artifacts
 cache
 typechain-types
+
+# zkSync
+cache-zk
+artifacts-zk

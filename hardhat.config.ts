@@ -1,20 +1,32 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import '@nomicfoundation/hardhat-toolbox'
 import '@openzeppelin/hardhat-upgrades'
 import '@nomicfoundation/hardhat-chai-matchers'
+import '@matterlabs/hardhat-zksync-deploy'
+import '@matterlabs/hardhat-zksync-solc'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-const privateKey =
-	typeof process.env.PRIVATE_KEY === 'undefined'
-		? '0000000000000000000000000000000000000000000000000000000000000000'
-		: process.env.PRIVATE_KEY
-
 const config = {
+	zksolc: {
+		version: '1.1.5',
+		compilerSource: 'docker',
+		settings: {
+			optimizer: {
+				enabled: true,
+			},
+			experimental: {
+				dockerImage: 'matterlabs/zksolc',
+				tag: 'v1.1.5',
+			},
+		},
+	},
+	zkSyncDeploy: {
+		zkSyncNetwork: 'https://zksync2-testnet.zksync.dev',
+		ethNetwork: 'goerli', // Can also be the RPC URL of the network (e.g. `https://goerli.infura.io/v3/<API_KEY>`)
+	},
 	solidity: {
-		version: '0.8.9',
+		version: '0.8.16',
 		settings: {
 			optimizer: {
 				enabled: true,
@@ -23,20 +35,8 @@ const config = {
 		},
 	},
 	networks: {
-		rinkeby: {
-			url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ARCHEMY_KEY!}`,
-			accounts: [privateKey],
-		},
-		polygonMumbai: {
-			url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env
-				.ARCHEMY_KEY!}`,
-			accounts: [privateKey],
-		},
-	},
-	etherscan: {
-		apiKey: {
-			rinkeby: process.env.ETHERSCAN_API_KEY!,
-			polygonMumbai: process.env.POLYGONSCAN_API_KEY!,
+		hardhat: {
+			zksync: true,
 		},
 	},
 }
